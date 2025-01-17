@@ -1,0 +1,87 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #name{
+            display: none;
+        }
+        
+        #textarea{
+            display: none;
+        }
+        #radio{
+            display: none;
+        }
+        
+        #checkbox{
+            display: none;
+        }
+        
+        #select{
+            display: none;
+        }
+    </style>
+ </head>
+ <body>
+    
+    <!-- creating input widgets -->
+
+    <h2>Form with Various Input Widgets</h2>
+
+    <form action="#" method="post">
+
+        <!-- Text Input -->
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name">
+        </div>
+
+        <!-- Textarea -->
+        <div class="form-group">
+            <label for="message">Message:</label>
+            <textarea id="message" name="textarea" rows="4" placeholder="Enter your message"></textarea>
+        </div>
+
+        <!-- Select -->
+        <div class="form-group">
+            <label for="country">Country:</label>
+            <select id="country" name="select">
+                <option value="us">United States</option>
+            </select>
+        </div>
+
+        <!-- Radio Buttons -->
+        <div class="form-group">
+            <label>Gender:</label><br>
+            <input type="radio" id="male" name="radio" value="male">
+            <label for="male">Male</label><br>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="form-group">
+            <label>Hobbies:</label><br>
+            <input type="checkbox" id="hobby1" name="checkbox" value="reading">
+            <label for="hobby1">Reading</label><br>
+        </div>
+
+        <button type="submit">Submit</button>
+
+    </form>
+
+    <script>
+
+    </script>
+ </body>
+ </html>
+
+ <!-- logic
+
+    step1: create input widgets and make the default display as none;
+    step2: create a js, fecth the api from backend the specified event;
+    step3: check the question,type,options;
+    step4: drop the answers into answer key;
+
+-->

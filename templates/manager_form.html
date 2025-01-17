@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* styles.css */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+        }
+
+        .form-container {
+            width: 90%;
+            max-width: 700px;
+            margin: 50px auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .form-header {
+            background-color: #673ab7;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .form-header p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+        }
+
+        #form-content {
+            padding: 20px;
+        }
+
+        .question {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .question label {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .question input,
+        .question textarea,
+        .question select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            background: #f1f1f1;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #add-question-btn {
+            background: #673ab7;
+            color: white;
+        }
+
+        #add-question-btn:hover {
+            background: #5e35b1;
+        }
+
+        #submit-form-btn {
+            background: #4caf50;
+            color: white;
+        }
+
+        #submit-form-btn:hover {
+            background: #43a047;
+        }
+
+        .add-option-btn,
+        .remove-option-btn {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .add-option-btn:hover,
+        .remove-option-btn:hover {
+            background-color: #5e35b1;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <header class="form-header">
+            <h1>Dynamic Form Builder</h1>
+            <p>Create and customize your form dynamically</p>
+        </header>
+
+        <div id="form-content">
+            <!-- Dynamic form content will go here -->
+        </div>
+
+        <div class="form-footer">
+            <button id="add-question-btn">+ Add Question</button>
+            <button id="submit-form-btn">Submit Form</button>
+        </div>
+    </div>
+
+    <!-- <script src="script.js"></script>
+      -->
+    <script>
+        // script.js
+        document.addEventListener('DOMContentLoaded', () => {
+            const formContent = document.getElementById('form-content');
+            const addQuestionBtn = document.getElementById('add-question-btn');
+            const submitFormBtn = document.getElementById('submit-form-btn');
+
+            addQuestionBtn.addEventListener('click', () => {
+                // Create a new question block
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+
+                // Add question label and input
+                const label = document.createElement('label');
+                label.textContent = 'Question:';
+                questionDiv.appendChild(label);
+
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.placeholder = 'Enter your question here';
+                input.className = 'question-input';
+                questionDiv.appendChild(input);
+
+                // Add answer type dropdown
+                const answerLabel = document.createElement('label');
+                answerLabel.textContent = 'Answer Type:';
+                questionDiv.appendChild(answerLabel);
+
+                const select = document.createElement('select');
+                select.innerHTML = `
+            <option value="text">Short Text</option>
+            <option value="textarea">Paragraph</option>
+            <option value="select">Multiple Choice</option>
+            <option value="checkbox">Checkbox</option>
+            <option value="radio">Radio Button</option>
+        `;
+                questionDiv.appendChild(select);
+
+                // Event listener to handle answer type changes
+                select.addEventListener('change', () => {
+                    const existingOptionsDiv = questionDiv.querySelector('.options');
+                    if (existingOptionsDiv) {
+                        existingOptionsDiv.remove();
+                    }
+
+                    if (['select', 'checkbox', 'radio'].includes(select.value)) {
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.className = 'options';
+
+                        const addOptionInput = () => {
+                            const optionDiv = document.createElement('div');
+                            optionDiv.className = 'option-item';
+
+                            const optionInput = document.createElement('input');
+                            optionInput.type = 'text';
+                            optionInput.placeholder = 'Enter option value';
+                            optionInput.className = 'option-input';
+                            optionDiv.appendChild(optionInput);
+
+                            const removeOptionBtn = document.createElement('button');
+                            removeOptionBtn.type = 'button';
+                            removeOptionBtn.textContent = 'Remove';
+                            removeOptionBtn.className = 'remove-option-btn';
+                            removeOptionBtn.addEventListener('click', () => {
+                                optionDiv.remove();
+                            });
+                            optionDiv.appendChild(removeOptionBtn);
+
+                            optionsDiv.appendChild(optionDiv);
+                        };
+
+                        const addOptionBtn = document.createElement('button');
+                        addOptionBtn.type = 'button';
+                        addOptionBtn.textContent = 'Add Option';
+                        addOptionBtn.className = 'add-option-btn';
+                        addOptionBtn.addEventListener('click', addOptionInput);
+
+                        optionsDiv.appendChild(addOptionBtn);
+                        questionDiv.appendChild(optionsDiv);
+                    }
+                });
+
+                formContent.appendChild(questionDiv);
+            });
+
+            // Function to convert the form into JSON format
+            const convertFormToJson = () => {
+                const questions = [];
+                const questionBlocks = document.querySelectorAll('.question');
+
+                questionBlocks.forEach((block) => {
+                    const questionText = block.querySelector('.question-input').value;
+                    const answerType = block.querySelector('select').value;
+
+                    const questionData = {
+                        question: questionText,
+                        type: answerType,
+                        options: []
+                    };
+
+                    if (['select', 'checkbox', 'radio'].includes(answerType)) {
+                        const optionInputs = block.querySelectorAll('.option-input');
+                        optionInputs.forEach((option) => {
+                            questionData.options.push(option.value);
+                        });
+                    }
+
+                    questions.push(questionData);
+                });
+
+                return questions;
+            };
+
+            // Event listener for form submission
+            // const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+            submitFormBtn.addEventListener('click', () => {
+                const jsonData = convertFormToJson();
+
+                fetch(`/submit-form/{{pk}}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{csrf_token}}', // Add CSRF token here
+                    },
+                    body: JSON.stringify(jsonData),
+                })
+                    .then(response => response.json())
+                    .then(data => console.log('Success:', data))
+                    .catch(error => console.error('Error:', error));
+            });
+
+        });
+
+
+    </script>
+</body>
+
+</html>

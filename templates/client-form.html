@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Form</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <style>
+        body {
+            background-color: #f9fafb;
+            color: #374151;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .submit-btn {
+            background-color: #4f46e5;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #4338ca;
+        }
+
+        .form-check-label {
+            margin-left: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            margin-bottom: 15px;
+        }
+
+        .form-check {
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <form id="from" action="">
+                <!-- Dynamic content will be appended here -->
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'hidden') {
+                location.reload()
+                console.log('User has switched to another tab or minimized the browser.');
+            } else if (document.visibilityState === 'visible') {
+                console.log('User is back on the tab.');
+            }
+        });
+
+        const form = document.getElementById('from');
+
+        function func(params) {
+            const createQuestion = (index) => {
+                const question = document.createElement('h4');
+                question.className = 'question';
+                question.textContent = params['data'][index]['question'];
+                form.appendChild(question);
+            };
+
+            for (let index = 0; index < params['data'].length; index++) {
+                const field = params['data'][index];
+                createQuestion(index);
+
+                if (field.type === 'text' || field.type === 'textarea') {
+                    const input = document.createElement(field.type === 'text' ? 'input' : 'textarea');
+                    input.className = 'form-control';
+                    input.name = field.question;
+                    input.type = field.type === 'text' ? 'text' : undefined;
+                    form.appendChild(input);
+                } else if (field.type === 'select') {
+                    const select = document.createElement('select');
+                    select.className = 'form-select';
+                    select.name = field.question;
+                    field.options.forEach(option => {
+                        const opt = document.createElement('option');
+                        opt.value = option;
+                        opt.textContent = option;
+                        select.appendChild(opt);
+                    });
+                    form.appendChild(select);
+                } else if (field.type === 'checkbox' || field.type === 'radio') {
+                    field.options.forEach((option, idx) => {
+                        const wrapper = document.createElement('div');
+                        wrapper.className = 'form-check';
+
+                        const input = document.createElement('input');
+                        input.type = field.type;
+                        input.className = 'form-check-input';
+                        input.name = field.question;
+                        input.id = `${field.type}-${index}-${idx}`;
+                        input.value = option;
+
+                        const label = document.createElement('label');
+                        label.className = 'form-check-label';
+                        label.setAttribute('for', input.id);
+                        label.textContent = option;
+
+                        wrapper.appendChild(input);
+                        wrapper.appendChild(label);
+                        form.appendChild(wrapper);
+                    });
+                }
+            }
+
+            const submitBtn = document.createElement('button');
+            submitBtn.type = 'submit';
+            submitBtn.textContent = 'Submit';
+            submitBtn.className = 'submit-btn btn btn-primary w-100 mt-3';
+            form.appendChild(submitBtn);
+        }
+
+        fetch("/api/form/{{id}}")
+            .then(response => response.json())
+            .then(data => func(data))
+            .catch(error => console.error('Error:', error));
+
+        form.addEventListener("submit", function (event) {
+            event.preventDefault();
+            const formData = new FormData(form);
+            const data = {};
+            for (const [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+
+            fetch('/answer/api/{{id}}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify(data),
+            })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

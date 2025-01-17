@@ -1,0 +1,328 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Table</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        .table-container {
+            width: 300px;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        td[contenteditable="true"] {
+            background-color: #fdfdfd;
+            outline: none;
+            cursor: text;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Dynamic Table with Direct Entry</h2>
+    <div class="table-container">
+        <table id="dynamicTable">
+            <tr>
+                <th>Data Entry</th>
+            </tr>
+            <tr>
+                <td contenteditable="true" oninput="addRow(this)"></td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        let largeData = {};
+        function addRow(currentCell) {
+    const table = document.getElementById('dynamicTable');
+    const lastRow = table.rows[table.rows.length - 1];
+    
+    // When new data is entered in the last row, add a new row
+    if (currentCell.parentNode === lastRow && currentCell.textContent.trim() !== '') {
+        createNewRow();
+    }
+}
+
+function createNewRow() {
+    const table = document.getElementById('dynamicTable');
+    const newRow = table.insertRow();
+    const newCell = newRow.insertCell(0);
+    newCell.contentEditable = 'true';
+    newCell.setAttribute('oninput', 'addRow(this)');
+    newCell.setAttribute('onblur', 'removeEmptyRow(this)');
+}
+
+// Event listener for paste
+document.getElementById('dynamicTable').addEventListener('paste', function (event) {
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedText = clipboardData.getData('Text');
+    const rows = pastedText.split('\n').map(row => row.trim()).filter(row => row !== '');
+
+    if (rows.length > 1) {
+        event.preventDefault();  // Prevent pasting all items into one cell
+        
+        rows.forEach((text, index) => {
+            let lastRow = document.getElementById('dynamicTable').rows[document.getElementById('dynamicTable').rows.length - 1];
+            let cell = lastRow.cells[0];
+            if (index === 0 && cell.textContent.trim() === '') {
+                cell.textContent = text;  // Use the existing last cell if it's empty
+            } else {
+                createNewRow();
+                lastRow = document.getElementById('dynamicTable').rows[document.getElementById('dynamicTable').rows.length - 1];
+                lastRow.cells[0].textContent = text;
+            }
+        });
+        
+        createNewRow();
+    }
+});
+
+// Remove empty rows on cell blur
+function removeEmptyRow(cell) {
+    if (cell.textContent.trim() === '') {
+        const row = cell.parentNode;
+        const table = row.parentNode;
+        if (table.rows.length > 2) {  // Keep at least one editable row in addition to the header
+            table.deleteRow(row.rowIndex);
+        }
+    }
+}
+
+
+
+    </script>
+</body>
+
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Forms Clone - Form Builder</title>
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Form Builder Container */
+        .form-builder-container {
+            width: 90%;
+            max-width: 800px;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            background-color: #1d72b8;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .btn:hover {
+            background-color: #155d8e;
+        }
+
+        /* Form Container */
+        .form-container {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .question-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .question-input {
+            padding: 8px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .question-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .remove-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        /* Form Footer */
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .form-footer button {
+            width: 48%;
+            background-color: #4CAF50;
+            border-radius: 5px;
+        }
+
+        .form-footer button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-builder-container">
+        <div class="form-header">
+            <h1>Form Builder</h1>
+            <button id="add-question" class="btn">+ Add Question</button>
+        </div>
+        <form id="form-container" class="form-container">
+            <!-- Dynamic questions will appear here -->
+        </form>
+        <div class="form-footer">
+            <button class="btn">Preview Form</button>
+            <button class="btn">Send</button>
+        </div>
+    </div>
+
+    <script>
+        // Getting references to elements
+        const addQuestionButton = document.getElementById('add-question');
+        const formContainer = document.getElementById('form-container');
+
+        // Counter for tracking questions
+        let questionCount = 0;
+
+        // Function to add a question to the form
+        function addQuestion() {
+            questionCount++;
+
+            // Create a question container
+            const questionDiv = document.createElement('div');
+            questionDiv.classList.add('question');
+            questionDiv.id = `question-${questionCount}`;
+
+            // Question title input field
+            const questionTitle = document.createElement('input');
+            questionTitle.classList.add('question-input');
+            questionTitle.type = 'text';
+            questionTitle.placeholder = 'Enter question here';
+
+            // Question type selector
+            const questionType = document.createElement('select');
+            const option1 = document.createElement('option');
+            option1.value = 'short_answer';
+            option1.textContent = 'Short Answer';
+            const option2 = document.createElement('option');
+            option2.value = 'paragraph';
+            option2.textContent = 'Paragraph';
+            questionType.appendChild(option1);
+            questionType.appendChild(option2);
+            questionType.classList.add('question-input');
+
+            // Add/remove buttons
+            const controlsDiv = document.createElement('div');
+            controlsDiv.classList.add('question-controls');
+
+            const removeButton = document.createElement('button');
+            removeButton.classList.add('btn', 'remove-btn');
+            removeButton.textContent = 'Remove Question';
+            removeButton.onclick = () => removeQuestion(questionDiv.id);
+
+            controlsDiv.appendChild(removeButton);
+
+            // Append elements to question div
+            questionDiv.appendChild(questionTitle);
+            questionDiv.appendChild(questionType);
+            questionDiv.appendChild(controlsDiv);
+
+            // Add question div to form container
+            formContainer.appendChild(questionDiv);
+        }
+
+        // Function to remove a question
+        function removeQuestion(id) {
+            const questionDiv = document.getElementById(id);
+            formContainer.removeChild(questionDiv);
+        }
+
+        // Event listener for the 'Add Question' button
+        addQuestionButton.addEventListener('click', addQuestion);
+    </script>
+</body>
+</html>
