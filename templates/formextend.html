@@ -1,0 +1,32 @@
+{% extends "app.html" %}
+
+{% block content %}
+<main class="container my-5">
+    <h2 class="text-center mb-4">Event List</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#Form ID</th>
+                    <th>Name</th>
+                    <th>About</th>
+                    <th>Responses</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Example rows -->
+                <tr>
+                    {% for i in data %}
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.eventname }}</td>
+                    <td>{{ i.eventabout }}</td>
+                    <td><a class="btn btn-primary btn-sm" href="/responses/{{i.id}}">View</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+{% endblock %}
+<!-- Main Content -->

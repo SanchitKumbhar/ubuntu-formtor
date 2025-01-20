@@ -56,7 +56,7 @@ def home(request):
 
 def app(request):
     if request.user.is_authenticated:
-        return render(request,"app.html",{'data':FormInfo.objects.filter(user=request.user)})
+        return render(request,"formextend.html",{'data':FormInfo.objects.filter(user=request.user)})
     else:
         return redirect('/auth')
 
@@ -103,12 +103,12 @@ def create_form(request, pk):
 @login_required
 def event_info(request):
     if request.method == "POST":
-        # eventname = request.POST.get("eventname")
+        eventname = request.POST.get("eventname")
         eventorganizer = request.POST.get("eventOrganizer")
-        eventday = request.POST.get("eventDay")
-        eventdate = request.POST.get("eventDate")
-        eventtime = request.POST.get("eventTime")
-        eventabout = request.POST.get("eventAbout")
+        eventday = request.POST.get("eventday")
+        eventdate = request.POST.get("eventdate")
+        eventtime = request.POST.get("eventtime")
+        eventabout = request.POST.get("eventabout")
 
         eventobj = FormInfo(eventname="eventname", eventorganizer=eventorganizer, eventday=eventday, eventdate=eventdate,
                                     eventtime=eventtime, eventabout=eventabout, user=request.user)
@@ -116,7 +116,7 @@ def event_info(request):
 
         return redirect(f"/create_form/{eventobj.pk}")
 
-    return render(request, "event_registration.html")
+    return render(request, "form-registration.html")
 
 
 def form_render(request,pk):
