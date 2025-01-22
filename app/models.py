@@ -53,3 +53,4 @@ class Answers(models.Model):
     answer=models.JSONField()
     username=models.CharField(max_length=122)
     event=models.ForeignKey(FormInfo, name="event", on_delete=models.CASCADE,null=True)
+

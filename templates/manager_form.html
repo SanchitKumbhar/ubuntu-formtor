@@ -61,7 +61,7 @@
         .question input,
         .question textarea,
         .question select {
-            padding: 10px;
+            padding: 3px;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
@@ -115,6 +115,53 @@
         .remove-option-btn:hover {
             background-color: #5e35b1;
         }
+        .options {
+            margin-top: 10px;
+        }
+    
+        .option-item {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between input and buttons */
+            margin-top: 5px;
+        }
+    
+        .option-input {
+            flex: 1; /* Makes the input take up the remaining space */
+            padding: 8px;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+    
+        .add-option-btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 12px;
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+    
+        .add-option-btn:hover {
+            background-color: #5e35b1;
+        }
+    
+        .remove-option-btn {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            color: #f44336;
+            cursor: pointer;
+        }
+    
+        .remove-option-btn:hover {
+            color: #d32f2f;
+        }
+    
     </style>
 </head>
 
@@ -131,6 +178,7 @@
 
         <div class="form-footer">
             <button id="add-question-btn">+ Add Question</button>
+            
             <button id="submit-form-btn">Submit Form</button>
         </div>
     </div>
@@ -138,140 +186,141 @@
     <!-- <script src="script.js"></script>
       -->
     <script>
-        // script.js
         document.addEventListener('DOMContentLoaded', () => {
             const formContent = document.getElementById('form-content');
             const addQuestionBtn = document.getElementById('add-question-btn');
             const submitFormBtn = document.getElementById('submit-form-btn');
-
+        
+            // Helper: Add an option input
+            const createOptionInput = (optionsDiv) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-item';
+        
+                const optionInput = document.createElement('input');
+                optionInput.type = 'text';
+                optionInput.placeholder = 'Enter option value';
+                optionInput.className = 'option-input';
+                optionDiv.appendChild(optionInput);
+        
+                const removeOptionBtn = document.createElement('button');
+                removeOptionBtn.type = 'button';
+                removeOptionBtn.innerHTML = '🗑️'; // Trashcan emoji
+                removeOptionBtn.className = 'remove-option-btn';
+                removeOptionBtn.addEventListener('click', () => {
+                    optionDiv.remove();
+                });
+                optionDiv.appendChild(removeOptionBtn);
+        
+                optionsDiv.appendChild(optionDiv);
+            };
+        
+            // Add a new question block
             addQuestionBtn.addEventListener('click', () => {
-                // Create a new question block
                 const questionDiv = document.createElement('div');
                 questionDiv.className = 'question';
-
-                // Add question label and input
+        
+                // Question label and input
                 const label = document.createElement('label');
                 label.textContent = 'Question:';
                 questionDiv.appendChild(label);
-
+        
                 const input = document.createElement('input');
                 input.type = 'text';
                 input.placeholder = 'Enter your question here';
                 input.className = 'question-input';
                 questionDiv.appendChild(input);
-
-                // Add answer type dropdown
+        
+                // Answer type dropdown
                 const answerLabel = document.createElement('label');
                 answerLabel.textContent = 'Answer Type:';
                 questionDiv.appendChild(answerLabel);
-
+        
                 const select = document.createElement('select');
                 select.innerHTML = `
-            <option value="text">Short Text</option>
-            <option value="textarea">Paragraph</option>
-            <option value="select">Multiple Choice</option>
-            <option value="checkbox">Checkbox</option>
-            <option value="radio">Radio Button</option>
-        `;
+                    <option value="text">Short Text</option>
+                    <option value="textarea">Paragraph</option>
+                    <option value="select">Multiple Choice</option>
+                    <option value="checkbox">Checkbox</option>
+                    <option value="radio">Radio Button</option>
+                `;
                 questionDiv.appendChild(select);
-
-                // Event listener to handle answer type changes
+        
+                // Handle answer type changes
                 select.addEventListener('change', () => {
                     const existingOptionsDiv = questionDiv.querySelector('.options');
-                    if (existingOptionsDiv) {
-                        existingOptionsDiv.remove();
-                    }
-
+                    if (existingOptionsDiv) existingOptionsDiv.remove();
+        
                     if (['select', 'checkbox', 'radio'].includes(select.value)) {
                         const optionsDiv = document.createElement('div');
                         optionsDiv.className = 'options';
-
-                        const addOptionInput = () => {
-                            const optionDiv = document.createElement('div');
-                            optionDiv.className = 'option-item';
-
-                            const optionInput = document.createElement('input');
-                            optionInput.type = 'text';
-                            optionInput.placeholder = 'Enter option value';
-                            optionInput.className = 'option-input';
-                            optionDiv.appendChild(optionInput);
-
-                            const removeOptionBtn = document.createElement('button');
-                            removeOptionBtn.type = 'button';
-                            removeOptionBtn.textContent = 'Remove';
-                            removeOptionBtn.className = 'remove-option-btn';
-                            removeOptionBtn.addEventListener('click', () => {
-                                optionDiv.remove();
-                            });
-                            optionDiv.appendChild(removeOptionBtn);
-
-                            optionsDiv.appendChild(optionDiv);
-                        };
-
+        
                         const addOptionBtn = document.createElement('button');
                         addOptionBtn.type = 'button';
                         addOptionBtn.textContent = 'Add Option';
                         addOptionBtn.className = 'add-option-btn';
-                        addOptionBtn.addEventListener('click', addOptionInput);
-
+                        addOptionBtn.addEventListener('click', () => createOptionInput(optionsDiv));
+        
                         optionsDiv.appendChild(addOptionBtn);
                         questionDiv.appendChild(optionsDiv);
                     }
                 });
-
+        
                 formContent.appendChild(questionDiv);
             });
-
-            // Function to convert the form into JSON format
+        
+            // Convert form to JSON
             const convertFormToJson = () => {
                 const questions = [];
                 const questionBlocks = document.querySelectorAll('.question');
-
+        
                 questionBlocks.forEach((block) => {
                     const questionText = block.querySelector('.question-input').value;
                     const answerType = block.querySelector('select').value;
-
+        
                     const questionData = {
                         question: questionText,
                         type: answerType,
-                        options: []
+                        options: [],
                     };
-
+        
                     if (['select', 'checkbox', 'radio'].includes(answerType)) {
                         const optionInputs = block.querySelectorAll('.option-input');
                         optionInputs.forEach((option) => {
                             questionData.options.push(option.value);
                         });
                     }
-
+        
                     questions.push(questionData);
                 });
-
+        
                 return questions;
             };
-
-            // Event listener for form submission
-            // const csrf_token = document.querySelector('[name=csrfmiddlewaretoken]').value;
-
+        
+            // Fetch CSRF token dynamically
+            const getCsrfToken = () => {
+                const csrfTokenElement = document.querySelector('[name=csrfmiddlewaretoken]');
+                return csrfTokenElement ? csrfTokenElement.value : '';
+            };
+        
+            // Submit form data
             submitFormBtn.addEventListener('click', () => {
                 const jsonData = convertFormToJson();
-
+                const csrfToken = getCsrfToken();
+        
                 fetch(`/submit-form/{{pk}}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{csrf_token}}', // Add CSRF token here
+                        'X-CSRFToken': csrfToken, // Dynamic CSRF token
                     },
                     body: JSON.stringify(jsonData),
                 })
-                    .then(response => response.json())
-                    .then(data => console.log('Success:', data))
-                    .catch(error => console.error('Error:', error));
+                    .then((response) => response.json())
+                    .then((data) => console.log('Success:', data))
+                    .catch((error) => console.error('Error:', error));
             });
-
         });
-
-
+        
     </script>
 </body>
 
