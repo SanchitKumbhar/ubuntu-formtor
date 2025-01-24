@@ -37,6 +37,7 @@ class FormData(models.Model):
     user = models.ForeignKey(CustomUser, name="customuser", on_delete=models.CASCADE)
     event = models.ForeignKey(FormInfo, name="event", on_delete=models.CASCADE)
     timestamp = models.DateField(null=True)
+    detect=models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.data)
