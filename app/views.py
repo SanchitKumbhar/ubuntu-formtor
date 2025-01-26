@@ -109,9 +109,10 @@ def event_info(request):
         eventdate = request.POST.get("eventdate")
         eventtime = request.POST.get("eventtime")
         eventabout = request.POST.get("eventabout")
+        detect=request.POST.get("category")
+        
 
-        eventobj = FormInfo(eventname="eventname", eventorganizer=eventorganizer, eventday=eventday, eventdate=eventdate,
-                                    eventtime=eventtime, eventabout=eventabout, user=request.user)
+        eventobj = FormInfo(eventname="eventname", eventorganizer=eventorganizer, eventday=eventday, eventdate=eventdate,eventtime=eventtime, eventabout=eventabout, user=request.user,detect=detect)
         eventobj.save()
 
         return redirect(f"/create_form/{eventobj.pk}")
@@ -205,7 +206,6 @@ def logoutuser(request):
 from django.core import serializers
 def AnswerRender(request,id):
     data=Answers.objects.get(pk=id,user=request.user).answer
-    return JsonResponse({
-        
+    return JsonResponse({        
         'data' : data
     })
