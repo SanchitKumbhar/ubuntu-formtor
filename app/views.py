@@ -56,7 +56,7 @@ def home(request):
 
 def app(request):
     if request.user.is_authenticated:
-        return render(request,"formextend.html",{'data':FormInfo.objects.filter(user=request.user)})
+        return render(request,"app-extend.html",{'data':FormInfo.objects.filter(user=request.user)})
     else:
         return redirect('/auth')
 
@@ -124,7 +124,9 @@ def form_render(request,pk):
     if FormData.objects.get(event=pk).timestamp ==  date.today():
         return HttpResponse("Page Closed")   
     else:
-        return render(request,"client-form.html",{'id':pk})
+        return render(request,"client-form.html",{'id':pk,'event': FormInfo.objects.get(pk=pk).eventabout
+        ,'title':FormInfo.objects.get(pk=pk).eventname
+        })
 
 
 def formapi(request,pk):
@@ -169,11 +171,11 @@ def dataItegration(request):
 
 
 
-# def GetDraft(request,pk):
-#     if request.method == 'GET':
-#         eventinstance=EventInformation.objects.get(pk=pk)
-#         draftinstance=DraftModel.objects.get(event=eventinstance)
-#         return JsonResponse({draftinstance.data[0]})
+def GetDraft(request,pk):
+    if request.method == 'GET':
+        eventinstance=FormInfo.objects.get(pk=pk)
+        draftinstance=DraftModel.objects.get(event=eventinstance)
+        return JsonResponse({draftinstance.data[0]})
 
 def AnswerAPI(request,id):
     jsondata=json.loads(request.body)

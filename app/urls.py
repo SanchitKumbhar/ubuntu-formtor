@@ -20,8 +20,8 @@ urlpatterns = [
     path("responses/<int:id>",views.Responses,name="responses"),
     # '''
     # editing is paused:
-    # path('api/draft/',views.Draft,name='api/draft'),
-    # path('api/get/draft/<int:pk>',views.GetDraft,name='api/get/draft')
+    path('api/draft/',views.Draft,name='api/draft'),
+    path('api/get/draft/<int:pk>',views.GetDraft,name='api/get/draft')
     # '''
 
 
